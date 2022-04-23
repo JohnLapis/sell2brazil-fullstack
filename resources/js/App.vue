@@ -1,43 +1,31 @@
 <template>
-    <input v-model="ArticleCode" maxlength="50">
-    <input v-model="ArticleName" maxlength="50">
-    <input v-model.number="UnitPrice" @keydown="isInputFloat($event)" id="quantity">
-    <input v-model.number="Quantity" @keydown="isInputInteger($event)">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand navbar-dark bg-dark top" :style="{height: '100%'}">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Criar pedido</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Listar pedidos</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
 
-    <button @click="createOrder" class="btn">Enviar</button>
+    <CreateOrder class="mt-3"/>
 </template>
 
 <script>
+import CreateOrder from './components/tabs/CreateOrder.vue'
+import ListOrders from './components/tabs/ListOrders.vue'
+
 export default {
   name: 'App',
-  data() {
-    return {
-	    ArticleCode: "",
-	    ArticleName: "",
-	    UnitPrice:   0,
-	    Quantity:    0,
-    }
-  },
-  methods: {
-    listOrders() {
-    },
-    createOrder() {
-      fetch('/api/orders', {
-        method: 'POST',
-        body: JSON.stringify({
-
-
-        })
-      })
-    },
-    isInputInteger(event) {
-      if (event.key.length === 1 && isNaN(event.key)) event.preventDefault()
-    },
-    isInputFloat(event) {
-      if (event.key === '.'
-          && !document.querySelector("#quantity").value.includes('.')) return
-      if (event.key.length === 1 && isNaN(event.key)) event.preventDefault()
-    },
+  components: {
+    CreateOrder,
+    ListOrders,
   }
 }
 </script>
@@ -48,7 +36,5 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
