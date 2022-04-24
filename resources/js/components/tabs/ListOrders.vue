@@ -1,5 +1,5 @@
 <template>
-    <button @click="listOrders" class="btn btn-dark mx-3">Listar pedidos</button>
+    <button @click="listOrders" class="btn btn-dark">Listar pedidos</button>
     <table class="table">
         <thead>
             <tr>

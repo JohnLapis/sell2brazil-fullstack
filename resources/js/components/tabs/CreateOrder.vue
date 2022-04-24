@@ -1,36 +1,33 @@
 <template>
-    <!-- <div class="container"> -->
-    <div class="">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Código de produto</th>
-                    <th>Nome de produto</th>
-                    <th>Preço unitário</th>
-                    <th>Quantidade</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="prod in products">
-                    <td><input v-model="prod.ArticleCode" maxlength="50" placeholder="Código de produto"></td>
-                    <td><input v-model="prod.ArticleName" maxlength="50" placeholder="Nome de produto"></td>
-                    <td><input v-model.number="prod.UnitPrice"
-                               @keydown="isInputFloat($event)"
-                               id="quantity"
-                               placeholder="Preço unitário"> </td>
-                    <td><input
-                          v-model.number="prod.Quantity"
-                          @keydown="isInputInteger($event)"
-                          placeholder="Quantidade">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <button @click="addProduct" class="btn btn-dark m-3">Adicionar produto ao pedido</button>
-        <button @click="fillInputsRandomly" class="btn btn-dark m-3">Preencher dados aleatoriamente</button>
-        <br/>
-        <button @click="createOrder" class="btn btn-dark my-3">Enviar</button>
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Código de produto</th>
+                <th>Nome de produto</th>
+                <th>Preço unitário</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="prod in products">
+                <td><input v-model="prod.ArticleCode" maxlength="50" placeholder="Código de produto"></td>
+                <td><input v-model="prod.ArticleName" maxlength="50" placeholder="Nome de produto"></td>
+                <td><input v-model.number="prod.UnitPrice"
+                           @keydown="isInputFloat($event)"
+                           id="quantity"
+                           placeholder="Preço unitário"> </td>
+                <td><input
+                      v-model.number="prod.Quantity"
+                      @keydown="isInputInteger($event)"
+                      placeholder="Quantidade">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button @click="addProduct" class="btn btn-dark m-3">Adicionar produto ao pedido</button>
+    <button @click="fillInputsRandomly" class="btn btn-dark m-3">Preencher dados aleatoriamente</button>
+    <br/>
+    <button @click="createOrder" class="btn btn-dark my-3">Enviar</button>
 </template>
 
 <script>
@@ -47,7 +44,7 @@ function getRandomPrice() {
 }
 
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
 	    products: [{
@@ -76,8 +73,8 @@ export default {
       })
     },
     async createOrder() {
-      const res = await fetch('/api/orders', {
-        method: 'POST',
+      const res = await fetch("/api/orders", {
+        method: "POST",
         body: JSON.stringify(this.products)
       })
       if (res.status === 201) alert("Pedido criado com sucesso!")
@@ -87,8 +84,8 @@ export default {
       if (event.key.length === 1 && isNaN(event.key)) event.preventDefault()
     },
     isInputFloat(event) {
-      if (event.key === '.'
-          && !document.querySelector("#quantity").value.includes('.')) return
+      if (event.key === "."
+          && !document.querySelector("#quantity").value.includes(".")) return
       if (event.key.length === 1 && isNaN(event.key)) event.preventDefault()
     },
   }
