@@ -80,7 +80,10 @@ export default {
         method: "POST",
         body: JSON.stringify(this.products)
       })
-      if (res.status === 201) alert("Pedido criado com sucesso!")
+      if (res.status === 201) {
+        const productId = (await res.json()).id
+        alert(`Pedido ${productId} criado com sucesso!`)
+      }
       else alert("Erro ao criar pedido.")
     },
     validateProducts() {

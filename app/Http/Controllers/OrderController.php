@@ -2,19 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Http\Resources\OrderResource;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-
-/* O desconto $DISCOUNT é aplicado ao preço de cada produto no pedido da qual a
- * quantidade está entre $MIN_QTY e $MAX_QTY (inclusivo) e
- * preço unitário * quantidade é pelo menos $500.
-*/
-const DISCOUNT = 0.15;
-const MIN_QTY = 5;
-const MAX_QTY = 9;
-const MIN_AMOUNT = 500;
+use App\Policies\ExternalApiPolicy;
 
 class OrderController extends Controller
 {
@@ -46,32 +37,21 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $products = json_decode($request->getContent(), true);
-        $aggregated_products = [];
-        $totalWithDiscount = 0;
-        $discount = 0;
-        foreach ($products as $p) {
-            $aggregated_products[$p['ArticleCode']] = $p;
-            $aggregated_products[$p['ArticleCode']]['Quantity'] = 0;
+        $data = json_decode($request->getContent(), true);
+        if (!Order::isValid($data)) {
+            return response()->json(
+                ['message' => 'Dados na request são inválidos.'], 400
+            );
         }
-        foreach ($products as $p) {
-            $aggregated_products[$p['ArticleCode']]['Quantity'] += $p['Quantity'];
+        $order = Order::createOrder($data);
+        try {
+            ExternalApiPolicy::postOrder($order);
+        } catch (Exception $e) {
+            return response()->json(
+                ['message' => 'Erro ao atualizar servidores.'], 500
+            );
         }
-        foreach ($aggregated_products as $articleCode => $p) {
-            if (MIN_QTY <= $p['Quantity'] && $p['Quantity'] <= MAX_QTY
-                && MIN_AMOUNT <= $p['Quantity'] * $p['UnitPrice']) {
-                $totalWithDiscount += (1 - DISCOUNT) * $p['Quantity'] * $p['UnitPrice'];
-                $discount += DISCOUNT * $p['Quantity'] * $p['UnitPrice'];
-            } else {
-                $totalWithDiscount += $p['Quantity'] * $p['UnitPrice'];
-            }
-        }
-        // Order::create(ALGO::serialize($request->all())); in the future
-        return Order::create([
-            'date' => Carbon::today()->format('Y-m-d'),
-            'total' => $totalWithDiscount,
-            'discount' => $discount,
-        ]);
+        return response()->json(['id' => $order->id], 201);
     }
 
     /**
