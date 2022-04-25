@@ -14,14 +14,13 @@ class OrderResource extends JsonResource
      */
     public function toArray($request)
     {
-        $order = parent::toArray($request);
-        $date = $order["date"];
+        $date = $this->date;
         return [
-            'OrderId' => $order['id'],
-            'OrderCode' => substr($date, 0, strlen($date)-3) . '-' . $order["id"],
+            'OrderId' => $this->id,
+            'OrderCode' => substr($date, 0, strlen($date)-3) . '-' . $this->id,
             'OrderDate' => $date,
-            'TotalAmountWithoutDiscount' => $order["total"] - $order["discount"],
-            'TotalAmountWithDiscount' => $order["total"],
+            'TotalAmountWithoutDiscount' => $this->total - $this->discount,
+            'TotalAmountWithDiscount' => $this->total,
         ];
     }
 }
