@@ -73,12 +73,27 @@ export default {
       })
     },
     async createOrder() {
+      const invalidProductId = this.validateProducts()
+      if (invalidProductId) return alert(`Produto na posição ${invalidProductId} é inválido.`)
+
       const res = await fetch("/api/orders", {
         method: "POST",
         body: JSON.stringify(this.products)
       })
       if (res.status === 201) alert("Pedido criado com sucesso!")
       else alert("Erro ao criar pedido.")
+    },
+    validateProducts() {
+      // Verifica se o usuário se deixou de preencher algum campo.
+      for (let i = 0; i < this.products.length; i++) {
+        const prod = this.products[i]
+        if (prod.ArticleCode === ""
+	          || prod.ArticleName === ""
+	          || prod.UnitPrice === null
+	          || prod.Quantity === null) {
+          return i + 1
+        }
+      }
     },
     isInputInteger(event) {
       if (event.key.length === 1 && isNaN(event.key)) event.preventDefault()
