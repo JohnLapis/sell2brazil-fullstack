@@ -1,0 +1,16 @@
+* Instalação
+
+Execute os seguintes comandos na raíz do projeto.
+#+begin_src
+composer install
+npm install
+npm run build
+#+end_src
+
+* Execução de testes
+
+Para realizar os testes, execute =./vendor/bin/phpunit tests/Unit/= na raíz do projeto.
+
+* Executar projeto
+
+Para executar o projeto, execute =npm run serve= na raíz do projeto e acesse o endereço exibido no console.
