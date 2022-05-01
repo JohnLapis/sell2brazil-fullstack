@@ -25,9 +25,14 @@ class Order extends Model
 
     public static function createOrder($products)
     {
+        return Order::create(Order::make($products));
+    }
+
+    public static function make($products)
+    {
         $aggregated_products = [];
         $totalWithoutDiscount = 0;
-        $discount = 0;
+        $discounted = 0;
         foreach ($products as $p) {
             $aggregated_products[$p['ArticleCode']] = $p;
             $aggregated_products[$p['ArticleCode']]['Quantity'] = 0;
@@ -38,17 +43,17 @@ class Order extends Model
         foreach ($aggregated_products as $p) {
             foreach (DiscountPolicy::getInstance()->rules as [$discount, $isAppliable]) {
                 if ($isAppliable($p)) {
-                    $discount += $discount * $p['Quantity'] * $p['UnitPrice'];
+                    $discounted += $discount * $p['Quantity'] * $p['UnitPrice'];
                 }
                 $totalWithoutDiscount += $p['Quantity'] * $p['UnitPrice'];
             }
         }
 
-        return Order::create([
+        return [
             'date' => Carbon::today()->format('Y-m-d'),
-            'total' => $totalWithoutDiscount - $discount,
-            'discount' => $discount,
-        ]);
+            'total' => $totalWithoutDiscount - $discounted,
+            'discount' => $discounted,
+        ];
     }
 
     public static function isValid($products) {
