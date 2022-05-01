@@ -34,8 +34,10 @@ class Order extends Model
         $totalWithoutDiscount = 0;
         $discounted = 0;
         foreach ($products as $p) {
-            $aggregated_products[$p['ArticleCode']] = $p;
-            $aggregated_products[$p['ArticleCode']]['Quantity'] = 0;
+            $aggregated_products[$p['ArticleCode']] = [
+                'UnitPrice' => $p['UnitPrice'],
+                'Quantity' => 0,
+            ];
         }
         foreach ($products as $p) {
             $aggregated_products[$p['ArticleCode']]['Quantity'] += $p['Quantity'];
